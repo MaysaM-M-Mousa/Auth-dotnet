@@ -10,6 +10,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthDbConfigs(builder.Configuration);
+builder.Services.AddOptionsClasses(builder.Configuration);
+builder.Services.AddApplicationRepositories();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
