@@ -13,6 +13,7 @@ builder.Services.AddAuthDbConfigs(builder.Configuration);
 builder.Services.AddOptionsClasses(builder.Configuration);
 builder.Services.AddApplicationRepositories();
 builder.Services.AddApplicationServices();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -25,6 +26,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
