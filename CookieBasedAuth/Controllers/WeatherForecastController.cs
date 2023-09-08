@@ -32,5 +32,19 @@ namespace CookieBasedAuth.Controllers
             })
             .ToArray();
         }
+
+        [Authorize(Roles = "admin, agent")]
+        [HttpGet("public")]
+        public string PublicEndPoint()
+        {
+            return "Success!";
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("Secret")]
+        public string SecretEndPoint()
+        {
+            return "Success!";
+        }
     }
 }
