@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPbacDbContext(builder.Configuration);
 builder.Services.AddOptionsClasses(builder.Configuration);
 builder.Services.AddServices();
+builder.Services.AddAppAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
