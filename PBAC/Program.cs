@@ -9,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPbacDbContext(builder.Configuration);
+builder.Services.AddOptionsClasses(builder.Configuration);
+builder.Services.AddServices();
 
 var app = builder.Build();
 
