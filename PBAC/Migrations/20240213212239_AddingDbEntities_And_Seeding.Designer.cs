@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PBAC.DB;
 
@@ -11,9 +12,10 @@ using PBAC.DB;
 namespace PBAC.Migrations
 {
     [DbContext(typeof(PbacContext))]
-    partial class PbacContextModelSnapshot : ModelSnapshot
+    [Migration("20240213212239_AddingDbEntities_And_Seeding")]
+    partial class AddingDbEntities_And_Seeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +205,7 @@ namespace PBAC.Migrations
                         new
                         {
                             RoleId = 3,
-                            PermissionId = 4
+                            PermissionId = 1
                         },
                         new
                         {
@@ -238,21 +240,21 @@ namespace PBAC.Migrations
                         new
                         {
                             Id = new Guid("a8315f05-f401-4589-b976-61d129d3b1d7"),
-                            Email = "admin@gmail.com",
+                            Email = "maysam.m.mousa@gmail.com",
                             Password = "easyPass",
                             UserName = "Maysam Mousa"
                         },
                         new
                         {
                             Id = new Guid("54bfc54e-386b-455f-b627-5b8800d7fc1a"),
-                            Email = "moderator@gmail.com",
+                            Email = "someone@gmail.com",
                             Password = "easyPass",
                             UserName = "Some random person"
                         },
                         new
                         {
                             Id = new Guid("8db76dd5-c7ff-4550-b471-38d3f73446bb"),
-                            Email = "user@gmail.com",
+                            Email = "user.regular@gmail.com",
                             Password = "easyPass",
                             UserName = "regular user"
                         },
@@ -293,16 +295,6 @@ namespace PBAC.Migrations
                         new
                         {
                             UserId = new Guid("8db76dd5-c7ff-4550-b471-38d3f73446bb"),
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UserId = new Guid("ffb2061b-815e-4f4a-a981-7846f76954ef"),
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = new Guid("ffb2061b-815e-4f4a-a981-7846f76954ef"),
                             RoleId = 3
                         });
                 });
