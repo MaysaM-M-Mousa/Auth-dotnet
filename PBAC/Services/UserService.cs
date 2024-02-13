@@ -16,13 +16,16 @@ public class UserService : IUserService
 {
     private readonly PbacContext _context;
     private readonly JwtOptions _jwtOptions;
+    private readonly IPermissionService _permissionService;
 
     public UserService(
-        PbacContext context, 
-        IOptions<JwtOptions> jwtOptions)
+        PbacContext context,
+        IOptions<JwtOptions> jwtOptions,
+        IPermissionService permissionService)
     {
         _context = context;
         _jwtOptions = jwtOptions.Value;
+        _permissionService = permissionService;
     }
 
     public async Task RegisterUser(User user)
@@ -51,11 +54,11 @@ public class UserService : IUserService
             IsAuthenticated = true,
             User = user,         
             LastAuthenticated = DateTime.UtcNow,
-            AccessToken = GenerateJwtToken(user)
+            AccessToken = await GenerateJwtToken(user)
         };
     }
 
-    private string GenerateJwtToken(User user)
+    private async Task<string> GenerateJwtToken(User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -64,6 +67,13 @@ public class UserService : IUserService
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email)
         };
+
+        var userPermissions = await _permissionService.GetUserPermissions(user.Id);
+
+        foreach(var permissionClaim in userPermissions)
+        {
+            claims.Add(new("permission", permissionClaim));
+        }
 
         var token = new JwtSecurityToken(
           _jwtOptions.Issuer,
