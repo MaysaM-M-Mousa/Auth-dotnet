@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using PBAC.Authorization;
 using PBAC.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,11 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddCustomSwaggerGenConfiguration();
 builder.Services.AddPbacDbContext(builder.Configuration);
 builder.Services.AddOptionsClasses(builder.Configuration);
 builder.Services.AddServices();
 builder.Services.AddAppAuthentication(builder.Configuration);
+
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 var app = builder.Build();
 
