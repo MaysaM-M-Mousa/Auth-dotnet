@@ -14,6 +14,7 @@ public class PermissionService : IPermissionService
         _context = context;
     }
 
+    // Permissions CRUD: [create, delete, get all]
     public async Task CreatePermission(Permission permission)
     {
         _context.Add(permission);
@@ -33,6 +34,7 @@ public class PermissionService : IPermissionService
             .ToListAsync();
     }
 
+    // Roels CRUD: [create, delete, get all]
     public async Task CreateRole(string roleName)
     {
         _context.Add(new Role() { Name = roleName });
@@ -52,6 +54,7 @@ public class PermissionService : IPermissionService
             .ToListAsync();
     }
 
+    // Roles Actions: [addUserToRole, RemoveUserFromRole]
     public async Task AddUserToRole(Guid userId, int roleId)
     {
         var userRoleRecord = new UserRole()
@@ -74,6 +77,7 @@ public class PermissionService : IPermissionService
         await _context.SaveChangesAsync();
     }
 
+    // Roles Actions: [addPermissionToRole, removePermissionFromRole]
     public async Task AddPermissionToRole(int permissionId, int roleId)
     {
         var permissionRoleRecord = new RolePermission()
@@ -96,6 +100,7 @@ public class PermissionService : IPermissionService
         await _context.SaveChangesAsync();
     }
 
+    // General Retrievals: [getAllUserPermissions, getAllRolePermissions, getAllUserRoles]
     public async Task<List<string>> GetUserPermissions(Guid userId)
     {
         return await (from usersRoles in _context.UsersRoles
@@ -107,5 +112,23 @@ public class PermissionService : IPermissionService
                       select permissions.Name)
                 .Distinct()
                 .ToListAsync();
+    }
+    
+    public async Task<List<Permission>> GetAllRolePermissions(int roleId)
+    {
+        return await (from rolePermissions in _context.RolesPermissions
+                    join permissions in _context.Permissions
+                    on rolePermissions.PermissionId equals permissions.Id
+                    where rolePermissions.RoleId == roleId
+                    select permissions).ToListAsync();
+    }
+
+    public async Task<List<Role>> GetAllUserRoles(Guid userId)
+    {
+        return await (from userRoles in _context.UsersRoles
+                      join roles in _context.Roles
+                      on userRoles.RoleId equals roles.Id
+                      where userRoles.UserId == userId
+                      select roles).ToListAsync();
     }
 }

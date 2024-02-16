@@ -25,4 +25,8 @@ public interface IPermissionService
     Task RemovePermissionFromRole(int permissionId, int roleId);
 
     Task<List<string>> GetUserPermissions(Guid userId);
+
+    Task<List<Permission>> GetAllRolePermissions(int roleId);
+
+    Task<List<Role>> GetAllUserRoles(Guid userId);
 }

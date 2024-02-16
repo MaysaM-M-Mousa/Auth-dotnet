@@ -117,10 +117,32 @@ public class PermissionController : ControllerBase
     /// <summary>
     /// Gets all user's permissions
     /// </summary>
-    [HttpGet("users/{userId}")]
+    [HttpGet("users/{userId}/permissions")]
     public async Task<List<string>> GetUserPermissions(Guid userId)
     {
         return await _permissionService.GetUserPermissions(userId);
+    }
+
+    /// <summary>
+    /// Gets all role's permissions
+    /// </summary>
+    [HttpGet("roles/{roleId}/permissions")]
+    public async Task<List<PermissionDto>> GetUserPermissions(int roleId)
+    {
+        return (await _permissionService.GetAllRolePermissions(roleId))
+            .Select(p => new PermissionDto() { Id = p.Id, Name = p.Name })
+            .ToList();
+    }
+
+    /// <summary>
+    /// Gets all user's roles
+    /// </summary>
+    [HttpGet("users/{userId}/roles")]
+    public async Task<List<RoleDto>> GetUserRoles(Guid userId)
+    {
+        return (await _permissionService.GetAllUserRoles(userId))
+            .Select(r => new RoleDto() { Id = r.Id, Name = r.Name })
+            .ToList();
     }
 }
 
