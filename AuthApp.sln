@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieBasedAuth", "CookieBa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultipleAuthSchemes", "MultipleAuthSchemes\MultipleAuthSchemes.csproj", "{8D18D44E-B650-44EF-9E7B-46525CEC7EE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBAC", "PBAC\PBAC.csproj", "{74B62890-0BBA-463D-B213-ADDC2D13095B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PBAC", "PBAC\PBAC.csproj", "{74B62890-0BBA-463D-B213-ADDC2D13095B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionAuth", "SessionAuth\SessionAuth.csproj", "{81308DD7-610F-4F00-BF0B-CB4A07B69AD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{74B62890-0BBA-463D-B213-ADDC2D13095B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74B62890-0BBA-463D-B213-ADDC2D13095B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74B62890-0BBA-463D-B213-ADDC2D13095B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81308DD7-610F-4F00-BF0B-CB4A07B69AD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81308DD7-610F-4F00-BF0B-CB4A07B69AD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81308DD7-610F-4F00-BF0B-CB4A07B69AD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81308DD7-610F-4F00-BF0B-CB4A07B69AD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
