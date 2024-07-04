@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace SessionAuth.SessionAuthenticationHandler;
 
@@ -12,6 +15,7 @@ public static class SessionExtensions
 
     public static AuthenticationBuilder AddSession(this AuthenticationBuilder builder, string authenticationScheme, string? displayName, Action<SessionAuthenticationOptions> configureOptions)
     {
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<SessionAuthenticationOptions>, PostConfigureSessionAuthenticationOptions>());
         builder.AddScheme<SessionAuthenticationOptions, SessionAuthenticationHandler>(authenticationScheme, displayName, configureOptions);
         return builder;
     }

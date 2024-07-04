@@ -30,7 +30,7 @@ public class SessionAuthenticationHandler : SignInAuthenticationHandler<SessionA
     protected override async Task HandleSignInAsync(ClaimsPrincipal user, AuthenticationProperties? properties)
     {
         var userId = user.FindFirstValue("Id");
-        var expirationTime = DateTime.UtcNow + Options.ExpireTimeSpan;
+        var expirationTime = DateTime.UtcNow + Options.ExpireTimeSpan.Value;
 
         var session = await _sessionManager.CreateSession(Guid.Parse(userId), expirationTime);
 
