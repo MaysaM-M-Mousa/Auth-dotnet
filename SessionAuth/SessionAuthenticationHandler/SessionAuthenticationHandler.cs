@@ -6,13 +6,12 @@ using System.Text.Encodings.Web;
 
 namespace SessionAuth.SessionAuthenticationHandler;
 
-public class InMemorySessionAuthenticationHandler : 
-    SignInAuthenticationHandler<SessionAuthenticationOptions>
+public class SessionAuthenticationHandler : SignInAuthenticationHandler<SessionAuthenticationOptions>
 {
     private readonly ISessionManager _sessionManager;
     private readonly IHttpContextAccessor _contextAccessor;
 
-    public InMemorySessionAuthenticationHandler(
+    public SessionAuthenticationHandler(
         IOptionsMonitor<SessionAuthenticationOptions> options,
         ILoggerFactory logger, UrlEncoder encoder,
         ISystemClock clock,
