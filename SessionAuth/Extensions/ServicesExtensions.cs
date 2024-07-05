@@ -9,6 +9,7 @@ public static class ServicesExtensions
     {
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<ISessionManager, InMemorySessionManager>();
+        services.AddSingleton<IUserService, InMemoryUserService>();
 
         return services;
     }

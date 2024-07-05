@@ -37,5 +37,12 @@ namespace SessionAuth.Controllers
         {
             return "This is a protected endpoint, if you successfully got this message, it means you are authenticated";        
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("protected/admin")]
+        public string GetAdminProtectedMessage()
+        {
+            return "This is a protected endpoint for admin roles only!";
+        }
     }
 }
