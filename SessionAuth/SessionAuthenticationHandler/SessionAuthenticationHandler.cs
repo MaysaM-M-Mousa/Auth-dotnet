@@ -9,17 +9,15 @@ namespace SessionAuth.SessionAuthenticationHandler;
 public class SessionAuthenticationHandler : SignInAuthenticationHandler<SessionAuthenticationOptions>
 {
     private readonly ISessionManager _sessionManager;
-    private readonly IHttpContextAccessor _contextAccessor;
-
+    
     public SessionAuthenticationHandler(
         IOptionsMonitor<SessionAuthenticationOptions> options,
         ILoggerFactory logger, UrlEncoder encoder,
         ISystemClock clock,
-        ISessionManager sessionManager, 
-        IHttpContextAccessor contextAccessor) : base(options, logger, encoder, clock)
+        ISessionManager sessionManager)
+        : base(options, logger, encoder, clock)
     {
         _sessionManager = sessionManager;
-        _contextAccessor = contextAccessor;
     }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -30,24 +28,28 @@ public class SessionAuthenticationHandler : SignInAuthenticationHandler<SessionA
     protected override async Task HandleSignInAsync(ClaimsPrincipal user, AuthenticationProperties? properties)
     {
         var userId = user.FindFirstValue("Id");
-        var expirationTime = DateTime.UtcNow + Options.ExpireTimeSpan.Value;
+        var expirationTime = DateTime.UtcNow + Options.ExpireTimeSpan.GetValueOrDefault();
 
         var session = await _sessionManager.CreateSession(Guid.Parse(userId), expirationTime);
 
-        _contextAccessor.HttpContext!.Response.Cookies.Append(Options.SessionName, session.Value, new());
+        Options
+            .CookieManager
+            .AppendResponseCookie(Context, Options.SessionName, session.Value, new());
     }
 
     protected override async Task HandleSignOutAsync(AuthenticationProperties? properties)
     {
-        var sessionExists = _contextAccessor.HttpContext!.Request.Cookies.TryGetValue(Options.SessionName, out var sessionValue);
+        var sessionValue = Options.CookieManager.GetRequestCookie(Context, Options.SessionName); ;
 
-        if (!sessionExists || sessionValue == null)
+        if (string.IsNullOrEmpty(sessionValue))
         {
             throw new Exception($"There is no corrosponding session value for the key {Options.SessionName}");
         }
 
         await _sessionManager.RevokeSession(sessionValue);
 
-        _contextAccessor.HttpContext!.Response.Cookies.Delete(Options.SessionName);
+        Options
+            .CookieManager
+            .DeleteCookie(Context, Options.SessionName, new());
     }
 }

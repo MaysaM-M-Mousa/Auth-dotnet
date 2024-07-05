@@ -10,8 +10,8 @@ public static class AuthExtensions
             .AddAuthentication(SessionAuthenticationDefaults.AuthenticationScheme)
             .AddSession(SessionAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(3);
-                //options.SessionName = "session_id";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(3);
+                options.SessionName = "session_id";
             });
 
         return services;
