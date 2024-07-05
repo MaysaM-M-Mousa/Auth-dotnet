@@ -20,9 +20,43 @@ public class SessionAuthenticationHandler : SignInAuthenticationHandler<SessionA
         _sessionManager = sessionManager;
     }
 
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        throw new NotImplementedException();
+        var sessionValue = Options.CookieManager.GetRequestCookie(Context, Options.SessionName);
+        
+        if (string.IsNullOrEmpty(sessionValue))
+        {
+            return AuthenticateResult.Fail($"There is no corresponding session value for the key {Options.SessionName}!");
+        }
+
+        var session = await _sessionManager.GetSessionByValue(sessionValue!);
+
+        if (session is null)
+        {
+            return AuthenticateResult.Fail($"Could not find a session with value {sessionValue}!");
+        }
+
+        if (session!.IsExpired() || session.IsRevoked)
+        {
+            return AuthenticateResult.Fail("Session either revoked or expired!");
+        }
+
+        var userPrinciple = GetCurrentUserPrinciple(session.UserId);
+        var authTicket = new AuthenticationTicket(userPrinciple, new(), SessionAuthenticationDefaults.AuthenticationScheme);
+
+        return AuthenticateResult.Success(authTicket);
+    }
+
+    private ClaimsPrincipal GetCurrentUserPrinciple(Guid userId)
+    {
+        var claims = new List<Claim>()
+        {
+            new Claim("Id", userId.ToString())
+        };
+
+        var claimsIdentity = new ClaimsIdentity(claims, SessionAuthenticationDefaults.AuthenticationScheme);
+
+        return new ClaimsPrincipal(claimsIdentity);
     }
 
     protected override async Task HandleSignInAsync(ClaimsPrincipal user, AuthenticationProperties? properties)
@@ -39,11 +73,11 @@ public class SessionAuthenticationHandler : SignInAuthenticationHandler<SessionA
 
     protected override async Task HandleSignOutAsync(AuthenticationProperties? properties)
     {
-        var sessionValue = Options.CookieManager.GetRequestCookie(Context, Options.SessionName); ;
+        var sessionValue = Options.CookieManager.GetRequestCookie(Context, Options.SessionName);
 
         if (string.IsNullOrEmpty(sessionValue))
         {
-            throw new Exception($"There is no corrosponding session value for the key {Options.SessionName}");
+            throw new Exception($"There is no corresponding session value for the key {Options.SessionName}");
         }
 
         await _sessionManager.RevokeSession(sessionValue);

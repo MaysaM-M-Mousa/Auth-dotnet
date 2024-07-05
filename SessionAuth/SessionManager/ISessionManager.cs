@@ -6,5 +6,7 @@ public interface ISessionManager
 
     Task<Guid?> GetUserBySessionValue(string sessionValue);
 
+    Task<Session?> GetSessionByValue(string sessionValue);
+
     Task<bool> RevokeSession(string sessionValue);
 }

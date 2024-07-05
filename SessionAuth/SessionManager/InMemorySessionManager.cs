@@ -35,6 +35,16 @@ public class InMemorySessionManager : ISessionManager
         return Task.FromResult(userId);
     }
 
+    public Task<Session?> GetSessionByValue(string sessionValue)
+    {
+        var session = _sessions
+            .SelectMany(s => s.Value)
+            .Where(s => s.Value == sessionValue)
+            .FirstOrDefault();
+
+        return Task.FromResult(session);
+    }
+
     public Task<bool> RevokeSession(string sessionValue)
     {
         var session = _sessions

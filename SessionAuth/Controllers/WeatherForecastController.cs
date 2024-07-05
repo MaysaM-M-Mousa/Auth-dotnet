@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SessionAuth.Controllers
@@ -28,6 +29,13 @@ namespace SessionAuth.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [Authorize]
+        [HttpGet("protected")]
+        public string GetProtectedMessage() 
+        {
+            return "This is a protected endpoint, if you successfully got this message, it means you are authenticated";        
         }
     }
 }

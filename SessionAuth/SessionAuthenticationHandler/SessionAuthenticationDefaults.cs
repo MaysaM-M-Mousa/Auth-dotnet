@@ -2,5 +2,5 @@
 
 public static class SessionAuthenticationDefaults
 {
-    public const string AuthenticationScheme = "InMemorySession";
+    public const string AuthenticationScheme = "Session";
 }
