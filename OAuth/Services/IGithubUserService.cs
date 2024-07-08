@@ -6,5 +6,5 @@ public interface IGithubUserService
 {
     public Task<GitHubUser> GetAuthenticatedUser();
 
-    public Task<string> GetAuthenticatedUserRepositories();
+    public Task<List<Repository>> GetAuthenticatedUserRepositories();
 }

@@ -22,7 +22,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("github/repositories/me")]
-    public async Task<string> GetGithubRepositories()
+    public async Task<List<Repository>> GetGithubRepositories()
     {
         return await _githubUserService.GetAuthenticatedUserRepositories();
     }

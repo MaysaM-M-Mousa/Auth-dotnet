@@ -29,12 +29,11 @@ public class GithubUserService : IGithubUserService
 
         var response = await client.GetAsync(endpoint);
         response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-
-        return JsonSerializer.Deserialize<GitHubUser>(content);
+        
+        return JsonSerializer.Deserialize<GitHubUser>(await response.Content.ReadAsStringAsync());
     }
 
-    public async Task<string> GetAuthenticatedUserRepositories()
+    public async Task<List<Repository>> GetAuthenticatedUserRepositories()
     {
         var user = await GetAuthenticatedUser();
 
@@ -44,7 +43,7 @@ public class GithubUserService : IGithubUserService
         var client = await GetGithubClient();
         var response = await client.GetAsync(endpoint);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<List<Repository>>(await response.Content.ReadAsStringAsync());
     }
 
     private async Task<HttpClient> GetGithubClient()
