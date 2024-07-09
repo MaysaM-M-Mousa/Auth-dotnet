@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationAuthentication(builder.Configuration);
+builder.Services.AddApplicationOAuth(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAppServices();
 builder.Services.AddNamedHttpClients();

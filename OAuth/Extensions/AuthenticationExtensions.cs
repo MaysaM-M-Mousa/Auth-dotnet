@@ -4,7 +4,7 @@ namespace OAuth.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddApplicationAuthentication(
+    public static IServiceCollection AddApplicationOAuth(
         this IServiceCollection services,
         IConfiguration configurations)
     {
