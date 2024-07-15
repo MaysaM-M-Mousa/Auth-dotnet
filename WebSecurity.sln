@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PBAC", "PBAC\PBAC.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SessionAuth", "SessionAuth\SessionAuth.csproj", "{81308DD7-610F-4F00-BF0B-CB4A07B69AD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuth", "OAuth\OAuth.csproj", "{6666988C-D509-4CE0-9A40-8BF44D33FF41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuth", "OAuth\OAuth.csproj", "{6666988C-D509-4CE0-9A40-8BF44D33FF41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenIdConnect", "OpenIdConnect\OpenIdConnect.csproj", "{66B7A96A-BC00-4E33-87BD-B2FC50B70B53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6666988C-D509-4CE0-9A40-8BF44D33FF41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6666988C-D509-4CE0-9A40-8BF44D33FF41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6666988C-D509-4CE0-9A40-8BF44D33FF41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66B7A96A-BC00-4E33-87BD-B2FC50B70B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B7A96A-BC00-4E33-87BD-B2FC50B70B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66B7A96A-BC00-4E33-87BD-B2FC50B70B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B7A96A-BC00-4E33-87BD-B2FC50B70B53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
