@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OpenIdConnect.Constants;
 using OpenIdConnect.Db;
 using OpenIdConnect.Db.Models;
 using OpenIdConnect.Models;
@@ -11,7 +12,7 @@ public class UserService : IUserService
 {
     private readonly OidcDb _context;
 
-    private List<string> DefaultRoles = new List<string>() { "User" };
+    private List<string> DefaultRoles = new List<string>() { Roles.User };
 
     public UserService(OidcDb context)
     {

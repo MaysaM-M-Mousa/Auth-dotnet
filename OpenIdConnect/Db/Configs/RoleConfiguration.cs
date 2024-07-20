@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using OpenIdConnect.Constants;
 using OpenIdConnect.Db.Models;
 
 namespace OpenIdConnect.Db.Configs;
@@ -12,9 +13,9 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 
         builder.HasData(new List<Role>()
         {
-            new(){ Id = 1, Name = "Admin" },
-            new(){ Id = 2, Name = "Manager" },
-            new(){ Id = 3, Name = "User" },
+            new(){ Id = 1, Name = Roles.Admin },
+            new(){ Id = 2, Name = Roles.Manager },
+            new(){ Id = 3, Name = Roles.User },
         });
     }
 }
