@@ -65,7 +65,7 @@ public static class AuthenticationExtensions
 
                         var userService = context.HttpContext.RequestServices.GetService<IUserService>()!;
                         await userService.EnsureUserCreatedAsync(userRequest);
-                        await userService.AppendApplicationRolesAsync(context.Principal);
+                        await userService.AssignUserRolesAsync(context.Principal);
                     }
                 };
         });
@@ -107,7 +107,7 @@ public static class AuthenticationExtensions
 
                         var userService = context.HttpContext.RequestServices.GetService<IUserService>()!;
                         await userService.EnsureUserCreatedAsync(userRequest);
-                        await userService.AppendApplicationRolesAsync(context.Principal);
+                        await userService.AssignUserRolesAsync(context.Principal);
                     }
                 };
             });

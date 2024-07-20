@@ -53,7 +53,7 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
     }
 
-    public async Task AppendApplicationRolesAsync(ClaimsPrincipal principal)
+    public async Task AssignUserRolesAsync(ClaimsPrincipal principal)
     {
         var providerKey = principal.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 

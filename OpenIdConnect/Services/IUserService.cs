@@ -7,5 +7,5 @@ public interface IUserService
 {
     Task EnsureUserCreatedAsync(CreateUserRequest request);
 
-    Task AppendApplicationRolesAsync(ClaimsPrincipal principal);
+    Task AssignUserRolesAsync(ClaimsPrincipal principal);
 }
