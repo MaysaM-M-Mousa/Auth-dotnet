@@ -1,13 +1,13 @@
 ﻿using JwtAuth.Services;
+using System.Security.Claims;
 
 namespace JwtAuth.Middlewares;
 
-public class AddUserDataMiddleware : IMiddleware
+public class UserDataMiddleware : IMiddleware
 {
     private readonly IUserService _userService;
-    private const string userIdClaimName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
-    public AddUserDataMiddleware(IUserService userService)
+    public UserDataMiddleware(IUserService userService)
     {
         _userService = userService;
     }
@@ -18,7 +18,7 @@ public class AddUserDataMiddleware : IMiddleware
 
         if (IsAuthenticated.HasValue && IsAuthenticated.Value == true)
         {
-            var userId = context.User.Claims.FirstOrDefault(c => c.Type == userIdClaimName)?.Value;
+            var userId = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             var user = await _userService.GetUser(long.Parse(userId!));
 

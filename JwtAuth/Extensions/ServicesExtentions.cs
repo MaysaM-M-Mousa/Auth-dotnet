@@ -10,7 +10,7 @@ public static class ServicesExtentions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IHashService, HashService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
-        services.AddScoped<AddUserDataMiddleware>();
+        services.AddScoped<UserDataMiddleware>();
 
         return services;
     }
