@@ -37,7 +37,7 @@ public class AuthenticationService : IAuthenticationService
 
         var userClaimsPrinciple = new ClaimsPrincipal(userIdentity);
 
-        await _contextAccessor.HttpContext.SignInAsync(schemeName, userClaimsPrinciple);
+        await _contextAccessor.HttpContext!.SignInAsync(schemeName, userClaimsPrinciple);
     }
 
     public async Task AuthenticateSpecialUser(SignInRequest request)
@@ -56,7 +56,7 @@ public class AuthenticationService : IAuthenticationService
 
         var userClaimsPrinciple = new ClaimsPrincipal(userIdentity);
 
-        await _contextAccessor.HttpContext.SignInAsync(schemeName, userClaimsPrinciple);
+        await _contextAccessor.HttpContext!.SignInAsync(schemeName, userClaimsPrinciple);
     }
 
     private User CheckValidLogin(SignInRequest request)
@@ -72,6 +72,6 @@ public class AuthenticationService : IAuthenticationService
     }
     public async Task SignOutUser(string schemeName)
     {
-        await _contextAccessor.HttpContext.SignOutAsync(schemeName);
+        await _contextAccessor.HttpContext!.SignOutAsync(schemeName);
     }
 }

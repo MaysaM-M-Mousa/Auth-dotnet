@@ -38,7 +38,7 @@ public class HomeController : ControllerBase
     }
 
     [HttpPost("logout-special")]
-    public async Task LogOutSpecial(SignInRequest request)
+    public async Task LogOutSpecial()
     {
         await _authenticationService.SignOutUser(SpecialUserSchemeName);
     }
