@@ -1,6 +1,6 @@
-﻿using CookieBasedAuth.Services;
+﻿using CookieAuth.Services;
 
-namespace CookieBasedAuth.Extensions;
+namespace CookieAuth.Extensions;
 
 public static class ServicesExtensions
 {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CookieBasedAuth.Controllers
+namespace CookieAuth.Controllers
 {
     [ApiController]
     [Route("[controller]")]

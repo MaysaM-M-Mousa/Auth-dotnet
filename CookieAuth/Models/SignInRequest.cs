@@ -1,4 +1,4 @@
-﻿namespace CookieBasedAuth.Models;
+﻿namespace CookieAuth.Models;
 
 public class SignInRequest
 {

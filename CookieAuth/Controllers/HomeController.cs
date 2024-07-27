@@ -1,8 +1,8 @@
-﻿using CookieBasedAuth.Models;
-using CookieBasedAuth.Services;
+﻿using CookieAuth.Models;
+using CookieAuth.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CookieBasedAuth.Controllers;
+namespace CookieAuth.Controllers;
 
 [Route("Home")]
 [ApiController]
@@ -26,5 +26,4 @@ public class HomeController : ControllerBase
     {
         await _authenticationService.LogOut();
     }
-
 }

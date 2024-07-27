@@ -1,19 +1,18 @@
-﻿using CookieBasedAuth.Models;
+﻿using CookieAuth.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
-
-namespace CookieBasedAuth.Services;
+namespace CookieAuth.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
 
     private List<User> UsersLists = new List<User>()
     {
-        new User(){ Id = 1, UserName = "Ahmad", Email = "ahmad.mousa@gmail.com", Password = "123" },
-        new User(){ Id = 2, UserName = "Maysam", Email = "maysam.mousa@gmail.com", Password = "123" },
-        new User(){ Id = 3, UserName = "Fadi", Email = "fadi.mousa@gmail.com", Password = "123" }
+        new User(){ Id = 1, UserName = "Ahmad", Email = "ahmad.mousa@gmail.com", Password = "123", Role = "agent" },
+        new User(){ Id = 2, UserName = "Maysam", Email = "maysam.mousa@gmail.com", Password = "123", Role = "admin" },
+        new User(){ Id = 3, UserName = "Fadi", Email = "fadi.mousa@gmail.com", Password = "123", Role = "agent" }
     };
 
     private readonly IHttpContextAccessor _httpContext;
@@ -41,7 +40,7 @@ public class AuthenticationService : IAuthenticationService
         {
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, "agent"),
+            new Claim(ClaimTypes.Role, user.Role),
             new Claim("Country", "Palestine")
         };
 
@@ -66,15 +65,14 @@ public class AuthenticationService : IAuthenticationService
             // redirect response value.
         };
 
-
         var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var userClaimsPrinciple = new ClaimsPrincipal(userIdentity);
 
-        await _httpContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userClaimsPrinciple, authProperties);
+        await _httpContext.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userClaimsPrinciple, authProperties);
     }
 
     public async Task LogOut()
     {
-        await _httpContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await _httpContext.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace CookieBasedAuth.Extensions;
+namespace CookieAuth.Extensions;
 
 public static class CookiesExtensions
 {

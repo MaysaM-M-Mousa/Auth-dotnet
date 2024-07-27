@@ -1,6 +1,6 @@
-﻿using CookieBasedAuth.Models;
+﻿using CookieAuth.Models;
 
-namespace CookieBasedAuth.Services;
+namespace CookieAuth.Services;
 
 public interface IAuthenticationService
 {

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuth", "JwtAuth\JwtAuth.csproj", "{F1BBA052-EE9A-4B5F-9E6E-3BB304768B86}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieBasedAuth", "CookieBasedAuth\CookieBasedAuth.csproj", "{0E586941-9C9E-4E52-B5F8-C397BCC77AED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieAuth", "CookieAuth\CookieAuth.csproj", "{0E586941-9C9E-4E52-B5F8-C397BCC77AED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultipleAuthSchemes", "MultipleAuthSchemes\MultipleAuthSchemes.csproj", "{8D18D44E-B650-44EF-9E7B-46525CEC7EE9}"
 EndProject

@@ -1,4 +1,4 @@
-namespace CookieBasedAuth
+namespace CookieAuth
 {
     public class WeatherForecast
     {

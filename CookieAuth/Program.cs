@@ -1,4 +1,4 @@
-using CookieBasedAuth.Extensions;
+using CookieAuth.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
