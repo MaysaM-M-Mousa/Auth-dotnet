@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PBAC.Authorization;
+using PBAC.Constants;
 using PBAC.Services.Contracts;
 
 namespace PBAC.Controllers;
@@ -15,28 +16,28 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    [HasPermission("product:create")]
+    [HasPermission(Permissions.Products.Create)]
     [HttpPost]
     public async Task CreateProduct(ProductDto product)
     {
         await _productService.Create(new() { Name = product.Name, Quantity = product.Quantity });
     }
 
-    [HasPermission("product:update")]
+    [HasPermission(Permissions.Products.Update)]
     [HttpPut("{productId}")]
     public async Task UpdateProduct(Guid productId, ProductDto product)
     {
         await _productService.Update(productId, new() { Name = product.Name, Quantity = product.Quantity });
     }
 
-    [HasPermission("product:delete")]
+    [HasPermission(Permissions.Products.Delete)]
     [HttpDelete("{productId}")]
     public async Task DeleteProduct(Guid productId)
     {
         await _productService.Delete(productId);
     }
 
-    [HasPermission("product:read")]
+    [HasPermission(Permissions.Products.Read)]
     [HttpGet("{productId}")]
     public async Task<ProductDto> GetProduct(Guid productId)
     {

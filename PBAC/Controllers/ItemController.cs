@@ -1,43 +1,43 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PBAC.Authorization;
+using PBAC.Constants;
 using PBAC.Services.Contracts;
 
 namespace PBAC.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class IItemController : ControllerBase
+public class ItemController : ControllerBase
 {
     private readonly IItemService _itemService;
 
-    public IItemController(IItemService itemService)
+    public ItemController(IItemService itemService)
     {
         _itemService = itemService;
     }
 
-    [HasPermission("item:create")]
+    [HasPermission(Permissions.Items.Create)]
     [HttpPost]
     public async Task CreateItem(ItemDto item)
     {
         await _itemService.Create(new() { Name = item.Name, Description = item.Description });
     }
 
-    [HasPermission("item:update")]
+    [HasPermission(Permissions.Items.Update)]
     [HttpPut("{itemId}")]
     public async Task UpdateItem(Guid itemId, ItemDto item)
     {
         await _itemService.Update(itemId, new() { Name = item.Name, Description = item.Description });
     }
 
-    [HasPermission("item:delete")]
+    [HasPermission(Permissions.Items.Delete)]
     [HttpDelete("{itemId}")]
     public async Task DeleteItem(Guid itemId)
     {
         await _itemService.Delete(itemId);
     }
 
-    [HasPermission("item:read")]
+    [HasPermission(Permissions.Items.Read)]
     [HttpGet("{itemId}")]
     public async Task<ItemDto> GetItem(Guid itemId)
     {

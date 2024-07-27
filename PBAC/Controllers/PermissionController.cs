@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PBAC.Authorization;
+using PBAC.Constants;
 using PBAC.Services.Contracts;
 
 namespace PBAC.Controllers;
 
-[HasPermission("user.permissions:write")]
+[HasPermission(Permissions.Users.Write)]
 [Route("api/[controller]")]
 [ApiController]
 public class PermissionController : ControllerBase
