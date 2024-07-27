@@ -1,50 +1,104 @@
-# Auth-dotnet
+# WebSecurity
 
-JSON Web Tokens (JWT) and cookie-based authentication are two different approaches to managing user authentication and sessions in web applications. They have distinct characteristics and use cases, and the choice between them depends on your application's requirements. Here's a comparison of the two:
+This project is a series of Proofs of Concept (POCs) that implements comprehensive web security measures using the .NET framework. Starting with basic authentication methods like Cookie based authentication and JWT authentication, then explores multiple authentication schemes in .Net. Applies Permission-based access control. And implements OAuth/OpenIdConnect for authentication and authorization.
 
-## **JWT (JSON Web Tokens):**
+## **CookieAuth**
 
-1. **Stateless**: JWTs are typically stateless, meaning that all the necessary information to verify a user's identity and permissions is contained within the token itself. This means you don't need to store session data on the server.
+* Implements Cookie-based authentication in .Net.
 
-2. **Client-Side Storage**: JWTs are stored on the client-side, often in local storage or cookies. The server does not keep track of individual sessions.
+* Exploits the built-in functionality in .Net to achieve such an authentication measure, no external libraries were used.
 
-3. **Scalability**: Because JWTs are stateless, they are easier to scale horizontally. You can validate a JWT without relying on server-side session storage.
+* No External DB connection was used, only a set of fake users in memory in `AuthenticationService` to mimic the authentication process.
 
-4. **Flexibility**: JWTs can store arbitrary data in the form of claims, making them versatile for carrying information about a user, such as roles, permissions, and more.
+* If the user exists in the system we assign him claims such as [**Name**, **Id**, and **Role**], and sign in him with the `Cookies` authentication scheme.
 
-5. **Cross-Origin**: JWTs can be used for cross-origin authentication, making them suitable for single sign-on (SSO) scenarios.
+* Exposes `/login` and `/logout` endpoints in `HomeController`, Implements simple role-based access control on some resources in `WeatherForecastController` to validate the functionality of cookie authentication. 
 
-6. **Complexity**: Implementing JWT-based authentication may require more effort, especially when handling token issuance, validation, and token revocation.
+## **JwtAuth**
 
-## **Cookie/Session-Based Authentication:**
+* Implements JWT authentication in .Net.
 
-1. **Stateful**: Cookie-based authentication relies on server-side session storage to maintain user sessions. Each user is assigned a unique session ID (UUID usually), which is stored in a cookie on the client side and mapped to session data on the server.
+* Uses `Microsoft.AspNetCore.Authentication.JwtBearer` library for implementing the JWT authentication process in .Net.
 
-2. **Server-Side Storage**: Session data is stored on the server, which can be a database, an in-memory store, or a distributed cache, depending on your application's requirements.
+* Exposes `/Signin` and `/Signout` endpoints in `HomeController`.
 
-3. **Scalability**: Scaling cookie-based authentication can be more challenging because you need to manage session data across multiple servers. Load balancing strategies like sticky sessions may be necessary.
+* Uses MS SQL Server as a database to implement simple user model functionality. Stores hashed passwords.
 
-4. **Security**: Cookies are more secure by default because they cannot be accessed by JavaScript (when marked as HttpOnly) and are sent securely over HTTPS connections.
+* Implements the JWT authentication in `AuthenticationService` which signs the current user simple claims such [**Sub**, **Email**, and **Jti**].
 
-5. **Revocation**: Revoking a user's session is typically easier with cookie-based authentication because you can invalidate the session server-side.
+* Protects the endpoint in the `WeatherForecastController` to require to be authenticated before accessing the resource.
 
-6. **Cross-Origin**: Cookie-based authentication can be more challenging for cross-origin authentication and SSO because it relies on cookies that are bound to a specific domain.
+* Implements `UserDataMiddleware` which is executed immediately after the `AuthenticationMiddleware` to retrieve store user DB model in context by by extracting his Id from claims.  
 
-## **Use Case Considerations:**
+## **MultipleAuthSchemes**
 
-* JWT: JWTs are often preferred for stateless, API-centric applications or when dealing with multiple services and microservices. They are also suitable for mobile and single-page applications (SPAs).
+* Implements 2 Cookie-based authentication schemes, one is dedicated for `regular` users and the other for `special` users
 
-* Cookie-Based Authentication: Traditional web applications with a server-rendered UI often use cookie-based authentication. It's a simpler choice for handling user sessions, especially when dealing with complex authorization logic or when cross-origin concerns are not a primary consideration.
+* Exposes `/login-regular`, `/logout-regular` for regular users and `/login-special`, `/logout-special` for special users in `HomeController`
 
-In practice, some applications may use a combination of both approaches, where JWTs are used for API authentication, and cookie-based authentication is used for the web UI. The choice should be based on your specific requirements and security considerations.
+* No External DB connection was used, only a set of fake users in memory in `AuthenticationService` to mimic the authentication process.
 
+* Fake user will can authenticate himself with both endpoints; and he will get the corresponding role `regular` or `special` as well.
 
-### Notes:
-* JWT is a form of Token authentication
-* Cookies-based authentication in asp.net core is not as simple as descrbied above, it does stores user claims and a lot of information also and return it signed/encrypted to the user and when the server recieves a request it extracts the encrypted value and decrypt it and that way we achieve higher security and flexibility and of course we are approaching a more stateless authentication implementation 
-* It's optional in asp.net core to configure state management by the server side
+* Overrides the `AuthorizationPolicyBuilder` behavior in `PoliciesExtensions` to accept authenticated users from both schemes instead of the default one only.
 
-### Other Resources:
+* Defines `OnlySpecialUsers` authorization policy which only authorizes special users for chosen resources.
+
+* Validates the functionality of muliple authentication schemes in `WeatherForecastController` by defining an accessible resource by both schemes, and by defining a dedicated resource only for special users using the above mentioned policy.  
+
+## **SessionAuth**
+
+* Implements session-based authentication from scratch by introducing new custom session-based authentication scehem and its corresponding logic handler.
+
+* No External DB connection was used, only a set of fake users and roles implemented in-memory in `InMemoryUserService`.
+
+* An in-memory session manager implementation for managing usesr's session resides in `InMemorySessionManager`. Provides several functionalities starting from session **Creation**, **Retrieving**, and **Revoking** sessions.
+
+* Exposes `/sign-in` and `/sign-out` endpoints for users authentication in `HomeController`
+
+* As mentioned previously, this project introduces new authentication scheme and its corresponding handler by:
+  * Introducing `SessionAuthenticationOptions` options class to customize the functionality of the implementation. 
+  * Introducing `SessionAuthenticationHandler` which handles the following functionalities:
+    * Implements `HandleSignInAsync` method which creates a new user session and writes the session identifier to cookies, 
+    * Implements `HandleSignOutAsync` method which reads the session from the cookies and revoke it, then it clears the cookies from that session.
+    * Implements `HandleAuthenticateAsync` method which returns an **AuthenticationResult** representing the validity of the session. That's done by checking if the session is not revoked nor expired. After that if everything is validated, then we append a **ClaimsPrinciple** to the **AuthenticationResult** instance representing the user's context to be used later for authroization in the application.
+  * Registering the custom session-based authentication handler as our default authentication scheme in our application, that's done by using the methods provided by `SessionExtensions` to register our scheme. It's been done in `AuthExtensions` 
+
+* `HomeController` uses `AuthenticationService` internally which in turn specifies our new custom scheme to sign in and sign out users.
+
+* `WeatherForecastController` introduces endpoints and authorizes access to some of them based on the user's roles, which got evaluated and populated in `SessionAuthenticationHandler`. This proves the correctness of our custom scheme implementation.  
+
+## **PBAC**
+
+* Implements permission-based access control, and uses Jwt for authentication
+
+* The following relationship between entities is implemented
+  
+![image](https://github.com/user-attachments/assets/7e31edf0-ffbf-4185-aaf6-8d9e35f90280)
+
+* Uses MS SQL Server as a database to implement the mentioned relationship.
+ 
+* Exposes `/login` and `/sign-up` endpoints in `UserController` to authenticate and register users.
+
+* Once the user is authenticated, he will receive a JWT token containing all his permissions for the system. That's managed by `UserService`
+
+* The process of authorizaing users and determining their access level is implemented by exploiting the .Net built-in policy-based authorization and by overriding some of the built-in .Net identity features and introducing some attributes and helpers such:
+  * Introducing `PermissionRequirement` class which will hold the permission name dedicated for a specific resource
+  * Introducing `PermissionAuthorizationHandler` which handles and determins if the user is authorized to access a resource by extracing his permissions from his Jwt token.
+  * Overriding `DefaultAuthorizationPolicyProvider` behavior in `PermissionPolicyProvider` and registering it as the default one in the project. So if our policies start with the special prefix **"CustomPermission:"** then we build a policy at run time and inject to it **PermissionRequirement**
+  * Introducing `HasPermissionAttribute` class which handles the abstraction of adding the special prefix to each permission.
+  * Now the developers can use the `HasPermission` attribute, and pass to it the permission name the user should have to access the resource.
+
+* The flow for of how the system will work when a user tries to access an endpoint decorated with `HasPermission` attribute:
+  * The .Net built-in `AuthorizationService` will extract the permission name from the `HasPermission` which is a policy name
+  * The overridden `PermissionPolicyProvider` will detect that this permission starts with special prefix and will build a policy at run time containing `PermissionRequirement` requirement
+  * After getting the policy built at run time, the `AuthorizationService` will evaluate this policy by invoking the requirement's authorization handler which is `PermissionAuthorizationHandler`, and it will check if there is a permission in user's jwt matches the one specified at `HasPermission` attribute.
+
+* `ProductController`, `ItemController` and their respective services and entities were introduced as resources so authorized users can manipulate them.
+
+* `PermissionController` is introduced to provide admins to manipulate permissions and manage other users' permissions dynamically.  
+
+### Extra Resources:
 * [Web Authentication Methods Compared](https://testdriven.io/blog/web-authentication-methods/?fbclid=IwAR1s6B2DtCs5lBtNv91miQIqzxa6Ev60uBWtVkvxYFFyuGOw4MTGH9KWEuw#token-based-authentication)
 * [Cookie/Session-based Auth with Nodejs](https://www.sohamkamani.com/nodejs/session-cookie-authentication/)
 * [ASP.NET Core Authentication (.NET 7 Minimal APIs)](https://www.youtube.com/watch?v=ExQJljpj1lY&list=PLOeFnOV9YBa4yaz-uIi5T4ZW3QQGHJQXi) 
