@@ -13,11 +13,11 @@ This project is a series of Proofs of Concept (POCs) that implements comprehensi
 
 * Implements Cookie-based authentication in .Net.
 
-* Exploits the built-in functionality in .Net to achieve such an authentication measure, no external libraries were used.
-
 * No External DB connection was used, only a set of fake users in memory in `AuthenticationService` to mimic the authentication process.
 
-* If the user exists in the system we assign him claims such as [**Name**, **Id**, and **Role**], and sign in him with the `Cookies` authentication scheme.
+* Exploits the built-in functionality in .Net to achieve such an authentication measure, no external libraries were used.
+
+* If the user exists in the system we assign him claims such as [**Name**, **Id**, and **Role**], and signs him in with the `Cookies` authentication scheme.
 
 * Exposes `/login` and `/logout` endpoints in `HomeController`, Implements simple role-based access control on some resources in `WeatherForecastController` to validate the functionality of cookie authentication. 
 
@@ -27,57 +27,59 @@ This project is a series of Proofs of Concept (POCs) that implements comprehensi
 
 * Uses `Microsoft.AspNetCore.Authentication.JwtBearer` library for implementing the JWT authentication process in .Net.
 
+* Uses MS SQL Server as a database to implement simple user model functionality. Stores hashed passwords.
+ 
 * Exposes `/Signin` and `/Signout` endpoints in `HomeController`.
 
-* Uses MS SQL Server as a database to implement simple user model functionality. Stores hashed passwords.
+* Implements the JWT generation in `AuthenticationService` which is done by signing the current user with simple claims such [**Sub**, **Email**, and **Jti**].
 
-* Implements the JWT authentication in `AuthenticationService` which signs the current user simple claims such [**Sub**, **Email**, and **Jti**].
+* Protects the endpoint in the `WeatherForecastController` so it requires to be authenticated before accessing the resource.
 
-* Protects the endpoint in the `WeatherForecastController` to require to be authenticated before accessing the resource.
-
-* Implements `UserDataMiddleware` which is executed immediately after the `AuthenticationMiddleware` to retrieve store user DB model in context by by extracting his Id from claims.  
+* Implements `UserDataMiddleware` which is executed immediately after the built-in `AuthenticationMiddleware` to retrieve the user model from DB and stroe it in the request context by by extracting his Id from claims.  
 
 ## **MultipleAuthSchemes**
 
 * Implements 2 Cookie-based authentication schemes, one is dedicated for `regular` users and the other for `special` users
 
-* Exposes `/login-regular`, `/logout-regular` for regular users and `/login-special`, `/logout-special` for special users in `HomeController`
-
 * No External DB connection was used, only a set of fake users in memory in `AuthenticationService` to mimic the authentication process.
 
-* Fake user will can authenticate himself with both endpoints; and he will get the corresponding role `regular` or `special` as well.
+* Exposes `/login-regular`, `/logout-regular` for regular users and `/login-special`, `/logout-special` for special users in `HomeController`
+
+* A user can authenticate himself with both endpoints; and he will get the corresponding role `regular` or `special` as well.
 
 * Overrides the `AuthorizationPolicyBuilder` behavior in `PoliciesExtensions` to accept authenticated users from both schemes instead of the default one only.
 
-* Defines `OnlySpecialUsers` authorization policy which only authorizes special users for chosen resources.
+* Defines `OnlySpecialUsers` authorization policy which only authorizes special users to access the resources decorated with this policy.
 
 * Validates the functionality of muliple authentication schemes in `WeatherForecastController` by defining an accessible resource by both schemes, and by defining a dedicated resource only for special users using the above mentioned policy.  
 
 ## **SessionAuth**
 
-* Implements session-based authentication from scratch by introducing new custom session-based authentication scehem and its corresponding logic handler.
+* Implements session-based authentication from scratch by introducing new custom session-based authentication scheme and its corresponding authentication handler.
 
 * No External DB connection was used, only a set of fake users and roles implemented in-memory in `InMemoryUserService`.
 
-* An in-memory session manager implementation for managing usesr's session resides in `InMemorySessionManager`. Provides several functionalities starting from session **Creation**, **Retrieving**, and **Revoking** sessions.
+* An in-memory session manager implementation for managing user's session resides in `InMemorySessionManager`. Provides several functionalities such session **Creation**, **Retrieving**, and **Revoking** sessions.
 
 * Exposes `/sign-in` and `/sign-out` endpoints for users authentication in `HomeController`
 
 * As mentioned previously, this project introduces new authentication scheme and its corresponding handler by:
-  * Introducing `SessionAuthenticationOptions` options class to customize the functionality of the implementation. 
+  * Introducing `SessionAuthenticationOptions` to customize the configuration and functionality of the implementation. 
   * Introducing `SessionAuthenticationHandler` which handles the following functionalities:
     * Implements `HandleSignInAsync` method which creates a new user session and writes the session identifier to cookies, 
     * Implements `HandleSignOutAsync` method which reads the session from the cookies and revoke it, then it clears the cookies from that session.
-    * Implements `HandleAuthenticateAsync` method which returns an **AuthenticationResult** representing the validity of the session. That's done by checking if the session is not revoked nor expired. After that if everything is validated, then we append a **ClaimsPrinciple** to the **AuthenticationResult** instance representing the user's context to be used later for authroization in the application.
+    * Implements `HandleAuthenticateAsync` method which returns an **AuthenticationResult** representing the validity of the session. That's done by checking if the session is not revoked nor expired. After that if everything is validated, then we append a **ClaimsPrinciple** to the **AuthenticationResult** instance representing the user's context to be used later for authroization in the application. This method is called by built-in `AuthenticationMiddleware`
   * Registering the custom session-based authentication handler as our default authentication scheme in our application, that's done by using the methods provided by `SessionExtensions` to register our scheme. It's been done in `AuthExtensions` 
 
 * `HomeController` uses `AuthenticationService` internally which in turn specifies our new custom scheme to sign in and sign out users.
 
-* `WeatherForecastController` introduces endpoints and authorizes access to some of them based on the user's roles, which got evaluated and populated in `SessionAuthenticationHandler`. This proves the correctness of our custom scheme implementation.  
+* `WeatherForecastController` introduces endpoints and authorizes access to some of them based on the user's roles, which got evaluated and populated to request context in `SessionAuthenticationHandler`. This proves the correctness of our custom scheme implementation.  
 
 ## **PBAC**
 
 * Implements permission-based access control, and uses Jwt for authentication
+
+* Uses MS SQL Server as a database to implement the mentioned relationship.
 
 * The following relationship between entities is implemented where:
   * `User` represents the users in the system.
@@ -86,8 +88,6 @@ This project is a series of Proofs of Concept (POCs) that implements comprehensi
   * `UserRole` and `RolePermission` are junction tables to represent m-m relationships between entities. 
   
 ![image](https://github.com/user-attachments/assets/d9271e5e-2930-4dfe-814c-5add7df40c24)
-
-* Uses MS SQL Server as a database to implement the mentioned relationship.
  
 * Exposes `/login` and `/sign-up` endpoints in `UserController` to authenticate and register users.
 
@@ -95,17 +95,17 @@ This project is a series of Proofs of Concept (POCs) that implements comprehensi
 
 * The process of authorizaing users and determining their access level is implemented by exploiting the .Net built-in policy-based authorization and by overriding some of the built-in .Net identity features and introducing some attributes and helpers such:
   * Introducing `PermissionRequirement` class which will hold the permission name dedicated for a specific resource
-  * Introducing `PermissionAuthorizationHandler` which handles and determins if the user is authorized to access a resource by extracing his permissions from his Jwt token.
+  * Introducing `PermissionAuthorizationHandler` which handles and determines if the user is authorized to access a resource by extracing his permissions from his Jwt token.
   * Overriding `DefaultAuthorizationPolicyProvider` behavior in `PermissionPolicyProvider` and registering it as the default one in the project. So if our policies start with the special prefix **"CustomPermission:"** then we build a policy at run time and inject to it **PermissionRequirement**
   * Introducing `HasPermissionAttribute` class which handles the abstraction of adding the special prefix to each permission.
   * Now the developers can use the `HasPermission` attribute, and pass to it the permission name the user should have to access the resource.
 
 * The flow for of how the system will work when a user tries to access an endpoint decorated with `HasPermission` attribute:
-  * The .Net built-in `AuthorizationService` will extract the permission name from the `HasPermission` which is a policy name
-  * The overridden `PermissionPolicyProvider` will detect that this permission starts with special prefix and will build a policy at run time containing `PermissionRequirement` requirement
+  * The .Net built-in `AuthorizationService` will extract the permission name from the `HasPermission`, which represents a policy name
+  * The overridden `PermissionPolicyProvider` will detect that this permission starts with the pre-defined special prefix and will build a policy at run time containing `PermissionRequirement` requirement
   * After getting the policy built at run time, the `AuthorizationService` will evaluate this policy by invoking the requirement's authorization handler which is `PermissionAuthorizationHandler`, and it will check if there is a permission in user's jwt matches the one specified at `HasPermission` attribute.
 
-* `ProductController`, `ItemController` and their respective services and entities were introduced as resources so authorized users can manipulate them.
+* `ProductController`, `ItemController` and their respective services and entities were introduced as resources so authorized users can manipulate them. This also provides a way to check the correctness of the implementation.
 
 * `PermissionController` is introduced to provide admins the ability to manipulate permissions, roles, and managing other users' permissions dynamically.  
 
@@ -113,9 +113,9 @@ This project is a series of Proofs of Concept (POCs) that implements comprehensi
 
 * Implements OAuth flow for granting the application access to third-part applications.
 
-* The application does not use any external libraries but the .Net built-in implementation for OAuth.
-
 * The application authenticates users and serves them without storing any kind of users' information in its own system, so no Database was used at all.
+
+* The application does not use any external libraries but the .Net built-in implementation for OAuth.
 
 * The third-party application in this project was `GitHub`. In this project, we try to access user's repositories from GitHub.
 
